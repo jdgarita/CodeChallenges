@@ -1,10 +1,3 @@
-import java.security.SecureRandom
-
-const val LETTERS: String = "abcdefghijklmnopqrstuvwxyz"
-const val UPPERCASELETTERS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-const val NUMBERS: String = "0123456789"
-const val SPECIAL: String = "@#=+!£$%&?"
-
 fun main() {
     println(
         generatePassword(
@@ -15,33 +8,28 @@ fun main() {
 
 fun generatePassword(
     isWithUppercase: Boolean, isWithNumbers: Boolean, isWithSpecial: Boolean, length: Int
-) = when (length) {
-    in 8..16 -> {
-        var result = ""
-        var i = 0
+): String {
+    val finalLength = when {
+        length < 8 -> 8
+        length > 16 -> 16
+        else -> length
+    }
+    val characters = (97..123).toMutableList()
 
-        result += when {
-            isWithUppercase -> UPPERCASELETTERS
-            else -> LETTERS
-        }
-        if (isWithNumbers) {
-            result += NUMBERS
-        }
-        if (isWithSpecial) {
-            result += SPECIAL
-        }
-
-        val rnd = SecureRandom.getInstance("SHA1PRNG")
-        val sb = StringBuilder(length)
-
-        while (i < length) {
-            val randomInt: Int = rnd.nextInt(result.length)
-            sb.append(result[randomInt])
-            i++
-        }
-
-        sb.toString()
+    if (isWithUppercase) {
+        characters += (65..91).toList()
+    }
+    if (isWithNumbers) {
+        characters += (48..58).toList()
+    }
+    if (isWithSpecial) {
+        characters += (33..48).toList() + (58..65).toList() + (91..97).toList()
     }
 
-    else -> "invalid password length"
+    var result = ""
+    while (result.length < finalLength) {
+        result += Char(characters.random())
+    }
+
+    return result
 }
