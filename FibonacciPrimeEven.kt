@@ -10,7 +10,6 @@ fun main() {
 
 fun checkPrimeFibonacciEven(number: Int) {
     var result = "$number "
-    var isFibonacci = false
 
     when {
         number > 1 -> for (i in 2..number) {
