@@ -1,57 +1,29 @@
-import Choice.*
-
-private enum class Choice {
-    Rock, Paper, Scissors, Lizard, Spock;
-
-    companion object {
-        val relationships = listOf(
-            Relationship(Rock, Lizard),
-            Relationship(Rock, Scissors),
-            Relationship(Paper, Spock),
-            Relationship(Paper, Rock),
-            Relationship(Scissors, Paper),
-            Relationship(Scissors, Lizard),
-            Relationship(Spock, Rock),
-            Relationship(Spock, Scissors),
-            Relationship(Lizard, Paper),
-            Relationship(Lizard, Spock)
-        )
-    }
-}
-
-private data class Relationship(val winner: Choice, val loser: Choice)
-
 fun main() {
-    val turns = listOf(Pair(Rock, Scissors), Pair(Scissors, Rock), Pair(Paper, Scissors))
+    val turns = listOf(Pair("O", "X"), Pair("X", "O"), Pair("[]", "X"))
     game(turns)
 }
 
-/***
- * Rules:
- * s > p
- * p > r
- * r > l
- * l > spock
- * spock > s
- * s > l
- * l > p
- * p > spock
- * spock > r
- * r > s
- */
-private fun game(turns: List<Pair<Choice, Choice>>) {
+private fun game(turns: List<Pair<String, String>>) {
+
+    val rules = mapOf(
+        Pair("O", listOf("️X", "S")),
+        Pair("[]", listOf("️O", "W")),
+        Pair("X", listOf("️[]", "S")),
+        Pair("S", listOf("️W", "[]")),
+        Pair("W", listOf("️O", "X"))
+    )
     var player1 = 0
     var player2 = 0
-    turns.forEach { turn ->
-        val relationship = Choice.relationships.firstOrNull {
-            (it.winner == turn.first && it.loser == turn.second) || (it.loser == turn.first && it.winner == turn.second)
-        }
 
-        when (relationship) {
-            null -> println("It is a draw")
-            else -> when (relationship.winner) {
-                turn.first -> player1 += 1
-                else -> player2 += 1
+    turns.forEach { turn ->
+        val player1Game = turn.first
+        val player2Game = turn.second
+
+        if (player1Game != player2Game) {
+            if (rules[player1Game]?.contains(player2Game) == true) {
+                player1 += 1
+            } else {
+                player2 += 1
             }
         }
     }
